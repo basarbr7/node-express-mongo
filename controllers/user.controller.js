@@ -5,7 +5,16 @@ const User = require('../models/user.model')
 const alluser = async (req, res) => {
     try {
         const users = await User.find();
-        res.status(200).json(users);
+        res.status(200).json(
+            users.map( (user) => (
+                {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    age: user.age
+                }
+            ))
+        );
     } catch (error) {
         console.error('Error fetching users:', error.message);
         res.status(500).send( error.message || 'Internal server error');        
@@ -26,6 +35,9 @@ const userById = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
+        const existingUser = await User.findOne({ email: req.body.email });
+        if(existingUser) return res.status(400).send('User with this email already exists');
+
         const newUser = new User({
             id: nanoid(),
             name: req.body.name,
@@ -33,7 +45,11 @@ const createUser = async (req, res) => {
             age: Number(req.body.age) || 18
         });
         await newUser.save();
-        res.status(201).json(newUser);
+        res.status(201).json({
+            name: newUser.name,
+            email: newUser.email,
+            age: newUser.age,
+        });
     } catch (error) {
         console.error('Error creating user:', error.message);
         res.status(500).json({ message: 'Internal server error' });
