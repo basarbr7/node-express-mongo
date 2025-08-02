@@ -5,6 +5,7 @@ const app = express();
 
 // Import routes
 const userRoute = require('./routes/user.routes')
+const authRoute = require('./routes/auth.routes');
 
 
 // Middleware and routes can be defined here
@@ -13,13 +14,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
 
 // home route
-app.get('/', (req, res)=>{
-    res.send('Hello world ! This is the home route');
-})
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/views/index.html');
+});
 
 // Use user routes
 app.use('/api/users', userRoute);
-
+// Use auth routes
+app.use('/auth', authRoute);
 
 
 
