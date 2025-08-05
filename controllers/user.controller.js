@@ -1,25 +1,20 @@
 const { nanoid } = require('nanoid');
-
+const bcrypt = require('bcrypt');
 const User = require('../models/user.model')
 
 const alluser = async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(
-            users.map( (user) => (
-                {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    age: user.age
-                }
-            ))
+            // 
+            users
         );
     } catch (error) {
         console.error('Error fetching users:', error.message);
         res.status(500).send( error.message || 'Internal server error');        
     }
 }
+
 const userById = async (req, res) => {
     try {
         const userId = await req.params.id
@@ -35,21 +30,39 @@ const userById = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
-        const existingUser = await User.findOne({ email: req.body.email });
+        const { name, email, password, confirmPassword } = req.body;
+
+        if(!name || !email || !password || !confirmPassword) {
+            return res.status(400).send('All fields are required');
+        }
+        // Check if user with the same email already exists
+        const existingUser = await User.findOne({ email });
         if(existingUser) return res.status(400).send('User with this email already exists');
+        // Check if email is valid
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).send('Email must be a valid Gmail address');
+        }
+        // Check if passwords match
+        if(password !== confirmPassword) {
+            return res.status(400).send('Passwords do not match');
+        }
+
+        // Hash the password before saving
+        const salt = await bcrypt.genSalt(10);
+        const hashPass = await bcrypt.hash(password, salt);
 
         const newUser = new User({
             id: nanoid(),
-            name: req.body.name,
-            email: req.body.email,
-            age: Number(req.body.age) || 18
+            name,
+            email,
+            password: hashPass,
         });
+        
+        // Save the new user to the database
         await newUser.save();
-        res.status(201).json({
-            name: newUser.name,
-            email: newUser.email,
-            age: newUser.age,
-        });
+
+        res.status(201).json(newUser);
     } catch (error) {
         console.error('Error creating user:', error.message);
         res.status(500).json({ message: 'Internal server error' });

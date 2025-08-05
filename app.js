@@ -9,7 +9,13 @@ const authRoute = require('./routes/auth.routes');
 
 
 // Middleware and routes can be defined here
-app.use(cors());
+app.use(cors({
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
 
