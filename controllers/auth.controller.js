@@ -10,7 +10,7 @@ const loginUser = async (req, res) => {
         }
         const user = await User.findOne({ email });
         if (!user){
-            return res.status(404).json({ message: 'User not found mm'})
+            return res.status(404).json({ message: 'User not found'})
         }
         // Compare the provided password with the stored hashed password
         const validPassword = await bcrypt.compare(password, user.password);
