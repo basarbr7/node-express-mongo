@@ -20,7 +20,7 @@ const loginUser = async (req, res) => {
 
         // Token generate
         const token = jwt.sign(
-            { id: newUser.id, email: newUser.email },
+            { id: user.id, email: user.email },
             process.env.JWT_SECRET, 
             { expiresIn: '1d' } // 1 day expiration
         );
@@ -29,9 +29,9 @@ const loginUser = async (req, res) => {
             message: 'User created successfully',
             token,
             user: {
-                id: newUser.id,
-                name: newUser.name,
-                email: newUser.email
+                id: user.id,
+                name: user.name,
+                email: user.email
             }
         });
  
