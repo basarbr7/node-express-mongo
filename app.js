@@ -10,7 +10,7 @@ const authRoute = require('./routes/auth.routes');
 
 // Middleware and routes can be defined here
 app.use(cors({
-    origin: true,
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -26,10 +26,9 @@ app.get('/', (req, res) => {
 
 // Use user routes
 app.use('/api/users', userRoute);
+
 // Use auth routes
 app.use('/auth', authRoute);
-
-
 
 // 404 error handler
 app.use((req, res, next) => {
