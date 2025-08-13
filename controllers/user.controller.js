@@ -1,14 +1,11 @@
-const { nanoid } = require('nanoid');
+// const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model')
 
 const alluser = async (req, res) => {
     try {
         const users = await User.find();
-        res.status(200).json(
-            // 
-            users
-        );
+        res.status(200).json({ users });
     } catch (error) {
         console.error('Error fetching users:', error.message);
         res.status(500).send( error.message || 'Internal server error');        
@@ -18,8 +15,10 @@ const alluser = async (req, res) => {
 const userById = async (req, res) => {
     try {
         const userId = await req.params.id
+        console.log(userId);
+        
         const user = await User.findOne({
-            id: userId
+            _id: userId
         })
         res.status(200).json(user || { message: 'User not found' });
     } catch (error) {
@@ -53,7 +52,6 @@ const createUser = async (req, res) => {
         const hashPass = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            id: nanoid(),
             name,
             email,
             password: hashPass,
@@ -62,11 +60,7 @@ const createUser = async (req, res) => {
         await newUser.save();
         res.status(201).json({
             message: 'User created successfully',
-            user: {
-                id: newUser.id,
-                name: newUser.name,
-                email: newUser.email
-            }
+            user: { newUser }
         });
     } catch (error) {
         console.error('Error creating user:', error.message);
@@ -77,7 +71,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const userId = req.params.id;
     try {
-        const user = await User.findOne({ id: userId });
+        const user = await User.findOne({ _id: userId });
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
         user.age = Number(req.body.age) || user.age;
@@ -93,7 +87,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const userId = req.params.id;
-        const result = await User.deleteOne({ id: userId });
+        const result = await User.deleteOne({ _id: userId });
         console.log(result);
         if(result.deletedCount === 0){
             res.status(404).send('User not found' );

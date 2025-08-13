@@ -12,24 +12,24 @@ const loginUser = async (req, res) => {
         if (!user){
             return res.status(404).json({ message: 'User not found'})
         }
-        // Compare the provided password with the stored hashed password
+        // compare the provided password with the stored hashed password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(401).json({ message: 'Invalid password' });
         }
 
-        // Token generate
+        // token generate
         const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET, 
-            { expiresIn: '1d' } // 1 day expiration
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET_KEY, 
+            { expiresIn: '2d' }  // expire in 2 days
         );
 
         res.status(201).json({
             message: 'User created successfully',
             token,
             user: {
-                id: user.id,
+                id: user._id,
                 name: user.name,
                 email: user.email
             }

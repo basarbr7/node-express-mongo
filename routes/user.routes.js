@@ -14,5 +14,4 @@ route.patch('/:id', updateUser)
 
 route.delete('/:id', deleteUser)
 
-
 module.exports = route
