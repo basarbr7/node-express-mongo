@@ -12,7 +12,7 @@ const loginUser = async (req, res) => {
         if (!user){
             return res.status(404).json({ message: 'User not found'})
         }
-        // compare the provided password with the stored hashed password
+        // compare password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(401).json({ message: 'Invalid password' });
@@ -26,7 +26,7 @@ const loginUser = async (req, res) => {
         );
 
         res.status(201).json({
-            message: 'User created successfully',
+            message: 'Login successful',
             token,
             user: {
                 id: user._id,
