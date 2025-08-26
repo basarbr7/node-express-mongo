@@ -35,11 +35,13 @@ const createTodo = async (req, res)=> {
 const getTodoByUser = async (req, res)=>{
     try {
         const userId = req.params.id;
-        const todo = await Todo.find({userId})
-        if (!todo) {
-            return res.status(404).json({ message: 'Todo not found' })
+        const todos = await Todo.find({userId})
+
+        if (!todos || todos.length === 0) {
+            return res.status(404).json({ message: 'No todos found for this user' });
         }
-        res.status(200).json(todo)
+
+        res.status(200).json(todos)
     } catch (error) {
         console.error('Error Fetching Todo:', error.message)
         res.status(500).json({ message: 'Internal server error'})

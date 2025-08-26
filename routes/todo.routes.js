@@ -4,7 +4,7 @@ const route = require('express').Router();
 const { createTodo, getAllTodo, getTodoByUser } = require('../controllers/todo.controller')
 const auth = require('../middleware/verifyToken')
 
-route.get('/', auth, getAllTodo)
+route.get('/', getAllTodo)
 route.post('/', auth, createTodo)
 route.get('/user/:id', auth,  getTodoByUser)
 
