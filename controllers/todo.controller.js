@@ -41,7 +41,7 @@ const getTodoByUser = async (req, res)=>{
             return res.status(404).json({ message: 'No todos found for this user' });
         }
 
-        res.status(200).json(todos)
+        res.status(200).json({todos})
     } catch (error) {
         console.error('Error Fetching Todo:', error.message)
         res.status(500).json({ message: 'Internal server error'})
