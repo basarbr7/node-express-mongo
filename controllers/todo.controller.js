@@ -13,7 +13,7 @@ const getAllTodo = async (req, res)=> {
 
 const createTodo = async (req, res)=> {
     try {
-        const { title, description } = req.body;
+        const { title, description,completed } = req.body;
         const userId = req.user.id // middleware theke asche
         if (!title || !description ) {
             return res.status(400).json({ message: 'Title and description  are required' });
@@ -21,6 +21,7 @@ const createTodo = async (req, res)=> {
         const newTodo = new Todo({
             title,
             description,
+            completed: completed === "true" || completed === true,
             userId
         });
         const savetodo = await newTodo.save()
