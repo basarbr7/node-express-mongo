@@ -69,8 +69,8 @@ const createUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const userId = req.params.id;
     try {
+        const userId = req.params.id;
         const user = await User.findOne({ _id: userId });
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
@@ -88,7 +88,7 @@ const deleteUser = async (req, res) => {
     try {
         const userId = req.params.id;
         const result = await User.deleteOne({ _id: userId });
-        console.log(result);
+        // console.log(result);
         if(result.deletedCount === 0){
             res.status(404).send('User not found' );
         } 

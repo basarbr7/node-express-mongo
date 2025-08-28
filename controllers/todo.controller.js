@@ -64,4 +64,40 @@ const getSingleTodo = async (req, res)=>{
     }
 }
 
-module.exports = { createTodo, getAllTodo, getAllTodoByUser, getSingleTodo }
+const updateTodo = async (req, res)=>{
+    try {
+        const { id } = req.params
+        const { title, description, completed} = req.body
+        const todo = await Todo.findByIdAndUpdate(
+            id,
+            {title, description, completed},
+            {new: true, runValidators: true}
+        )
+        if(!todo){
+            return res.status(404).json({message: 'Todo not found'})
+        }
+
+        res.status(200).json({message: 'Todo Update Sucessfully', todo})
+
+    } catch (error) {
+        console.error('Error Update Todo:', error.message)
+        res.status(500).json({ message: 'Internal server error'})
+    }
+}
+
+const deleteTodo= async(req, res)=>{
+    try {
+        const { id } = req.params
+        const todo = await Todo.findByIdAndDelete(id)
+        if (!todo) {
+            return res.status(404).json({ message: "Todo not found" });
+        }
+
+        res.status(200).json({ message: "Todo deleted successfully", todo });
+    } catch (error) {
+        console.error('Error delete Todo:', error.message)
+        res.status(500).json({ message: 'Internal server error'})
+    }
+}
+
+module.exports = { createTodo, getAllTodo, getAllTodoByUser, getSingleTodo, updateTodo, deleteTodo }
