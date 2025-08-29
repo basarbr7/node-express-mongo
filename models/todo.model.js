@@ -1,25 +1,37 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 
-const todoSchema = new Schema({
+const todoSchema = new Schema(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    completed: {
-        type: Boolean,
-        default: false,
+    dueDate: {
+      type: Date,
     },
-    userId: { 
-        type: Schema.Types.ObjectId,
-        ref: 'User', 
-        required: true 
+    status: {
+      type: String,
+      enum: ["Pending", "In Progress", "Done"],
+      default: "Pending",
     },
-});
+    category: { 
+        type: String 
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Todo = model('Todo', todoSchema);
+const Todo = model("Todo", todoSchema);
 
 module.exports = Todo;

@@ -13,7 +13,7 @@ const getAllTodo = async (req, res)=> {
 
 const createTodo = async (req, res)=> {
     try {
-        const { title, description,completed } = req.body;
+        const { title, description, dueDate, status, category } = req.body;
         const userId = req.user.id // middleware theke asche
         if (!title || !description ) {
             return res.status(400).json({ message: 'Title and description  are required' });
@@ -21,7 +21,9 @@ const createTodo = async (req, res)=> {
         const newTodo = new Todo({
             title,
             description,
-            completed: completed === "true" || completed === true,
+            status,
+            dueDate,
+            category,
             userId
         });
         const savetodo = await newTodo.save()
@@ -67,11 +69,12 @@ const getSingleTodo = async (req, res)=>{
 const updateTodo = async (req, res)=>{
     try {
         const { id } = req.params
-        const { title, description, completed} = req.body
+        // const { title, description, dueDate, status, category } = req.body
         const todo = await Todo.findByIdAndUpdate(
             id,
-            {title, description, completed},
-            {new: true, runValidators: true}
+            req.body, // direct body theke asbe data
+            // { title, description, dueDate, status, category },
+            { new: true, runValidators: true } // update date asbe 
         )
         if(!todo){
             return res.status(404).json({message: 'Todo not found'})
