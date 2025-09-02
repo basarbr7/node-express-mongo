@@ -2,13 +2,13 @@ const route = require('express').Router();
 
 // Importing the todo controller functions
 const { createTodo, getAllTodo, getAllTodoByUser, getSingleTodo, updateTodo, deleteTodo } = require('../controllers/todo.controller')
-const auth = require('../middleware/verifyToken')
+const verifyToken = require('../middleware/verifyToken')
 
 route.get('/', getAllTodo)
-route.post('/', auth, createTodo)
-route.get('/user/:id', auth,  getAllTodoByUser)
-route.get('/:id', auth, getSingleTodo)
-route.patch('/:id', auth, updateTodo)
-route.delete('/:id', auth, deleteTodo)
+route.post('/', verifyToken, createTodo)
+route.get('/user/:id', verifyToken,  getAllTodoByUser)
+route.get('/:id', verifyToken, getSingleTodo)
+route.patch('/:id', verifyToken, updateTodo)
+route.delete('/:id', verifyToken, deleteTodo)
 
 module.exports = route

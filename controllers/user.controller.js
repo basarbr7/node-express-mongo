@@ -14,12 +14,10 @@ const alluser = async (req, res) => {
 
 const userById = async (req, res) => {
     try {
-        const userId = await req.params.id
-        console.log(userId);
+        const {userId} = req.params
+        // console.log(userId);
         
-        const user = await User.findOne({
-            _id: userId
-        })
+        const user = await User.findOne({ id: userId })
         res.status(200).json(user || { message: 'User not found' });
     } catch (error) {
         console.error('Error featching user:', error.message)
@@ -68,21 +66,32 @@ const createUser = async (req, res) => {
     }
 }
 
-const updateUser = async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const user = await User.findOne({ _id: userId });
-        user.name = req.body.name || user.name;
-        user.email = req.body.email || user.email;
-        user.age = Number(req.body.age) || user.age;
-        await user.save();
-        res.status(200).json(user || { message: 'User not found' });
-    } catch (error) {
-        console.error('Error updating user:', error.message);
-        res.status(500).json({ message: 'Internal server error' });
-        
+const updateProfileUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let updateData = { ...req.body };
+    if (req.file) {
+      updateData.image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
     }
-}
+
+    const updateUser = await User.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!updateUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(updateUser);
+  } catch (error) {
+    console.error("Error updating user:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 const deleteUser = async (req, res) => {
     try {
@@ -99,4 +108,4 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { alluser, userById, createUser, updateUser, deleteUser };
+module.exports = { alluser, userById, createUser, updateProfileUser, deleteUser };
