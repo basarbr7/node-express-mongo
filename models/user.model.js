@@ -23,7 +23,7 @@ const userSchema = new Schema({
 
    // Extra profile fields
   title: {
-    type: string,
+    type: String,
     default: ""
   }, 
   bio: {
