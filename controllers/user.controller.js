@@ -14,10 +14,10 @@ const alluser = async (req, res) => {
 
 const userById = async (req, res) => {
     try {
-        const {userId} = req.params
+        const {id} = req.params
         // console.log(userId);
-        
-        const user = await User.findOne({ id: userId })
+        const user = await User.findById( id )
+
         res.status(200).json(user || { message: 'User not found' });
     } catch (error) {
         console.error('Error featching user:', error.message)
