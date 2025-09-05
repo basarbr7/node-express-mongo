@@ -72,7 +72,7 @@ const updateProfileUser = async (req, res) => {
 
     let updateData = { ...req.body };
     if (req.file) {
-      updateData.image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+      updateData.image = req.file.filename;
     }
 
     const updateUser = await User.findByIdAndUpdate(
